@@ -66,3 +66,26 @@ CREATE TABLE properties (
     location_zip_code VARCHAR(255),
     location_country VARCHAR(255),
     );
+
+CREATE TABLE jobs (
+    id VARCHAR(36) PRIMARY KEY, -- uuid.v4()
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    property VARCHAR(36) FOREIGN KEY REFERENCES properties -- property_id
+
+    assignee_company VARCHAR(36) FOREIGN KEY REFERENCES users -- company_id
+    assignee VARCHAR(36) FOREIGN KEY REFERENCES users -- user_id
+    assigned_by VARCHAR(36) FOREIGN KEY REFERENCES users -- user_id aka company_admin
+    assigned_at DATETIME,
+
+    completed_at DATETIME,
+    notes LONGTEXT,
+
+    -- TODO: recurring? scheduling details?
+
+)
+
+-- TODO: through tables
+-- usersToCompanies: who are agents of a company
+-- jobsToProperties: jobs that took place at a property
+-- jobsToCompanies: jobs completed by a company
