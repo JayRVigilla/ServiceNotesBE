@@ -1,11 +1,8 @@
 import express, {NextFunction, Request, Response } from "express"
 import { LOCAL_PORT } from "./constants";
-import { currentTime } from "./utils/time";
-import { generateResponseHeaders } from "./utils/headers";
 import { RequestError } from "./types/errors";
 
-
-const pjson = require('./../package.json');
+const pjson = require("./../package.json");
 
 
 const app = express()
