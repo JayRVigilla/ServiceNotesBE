@@ -12,6 +12,7 @@ const port = process.env.PORT || LOCAL_PORT
 
 // process JSON body => req.body
 app.use(express.json())
+app.use(cors());
 
 // process traditional form data => req.body
 app.use(express.urlencoded({extended: true}))
