@@ -3,7 +3,7 @@ import { LOCAL_PORT } from "./constants";
 import { RequestError } from "./types/errors";
 
 const pjson = require("./../package.json");
-
+const { cors } = require("cors");
 
 const app = express()
 const port = process.env.PORT || LOCAL_PORT
