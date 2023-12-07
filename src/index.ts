@@ -9,6 +9,7 @@ const app = express()
 const port = process.env.PORT || LOCAL_PORT
 
 const authRoutes = require("./routes/auth")
+const userRoutes = require("./routes/users")
 
 
 // process JSON body => req.body
@@ -18,6 +19,7 @@ app.use(cors());
 // process traditional form data => req.body
 // app.use(express.urlencoded({extended: true}))
 app.use("/api/auth", authRoutes)
+app.use("/api/users", userRoutes)
 
 app.listen(port, () => {
   console.info(`*** ${pjson.name} v${pjson.version} listening on ${port} *** `)

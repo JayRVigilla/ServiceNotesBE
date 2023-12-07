@@ -14,13 +14,13 @@ CREATE TABLE Users (
   first_name VARCHAR(255) NOT NULL,
   last_name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
-  phone_number VARCHAR(20) NOT NULL,
-  address VARCHAR(255) NOT NULL,
-  city VARCHAR(255) NOT NULL,
-  state VARCHAR(255) NOT NULL,
-  zip_code VARCHAR(10) NOT NULL,
+  phone_number VARCHAR(20),
+  address VARCHAR(255),
+  city VARCHAR(255),
+  state VARCHAR(255),
+  zip_code VARCHAR(10),
   img_url VARCHAR(255),  -- You might want to adjust the size based on your needs
-  password_hash VARCHAR(255) NOT NULL,
+  password_hash VARCHAR(255),
   username VARCHAR(50) NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
