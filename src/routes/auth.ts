@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 
-const bcrypt = require("bcrypt");
-const database = require("../db");
+const db = require("../db");
 const express = require("express");
 const router = new express.Router();
+const bcrypt = require("bcrypt");
 
+
+const {createPasswordHash } = require("./../utils/auth")
 /**
  * TODO:
  * - create hash and save to password
@@ -19,11 +21,22 @@ const router = new express.Router();
 //   }
 // });
 
-router.post("auth", async (req: Request, res: Response, next: NextFunction) => {
+router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await database.query(``);
+    // console.log("auth route1", { req })
+    console.log("auth route1", { db })
+    const result = await createPasswordHash("rawPwd", "createdDate", "UUID");
+
+    const query = await db.query(
+      // `SELECT * FROM USERS`,
+      `UPDATE users SET password_hash=$1 WHERE id=$2`,
+      [result, "0fa5d6c2-49da-43bc-98db-71f7e6172fbc"]
+    );
+    console.log("auth route2", { result })
+    return res.json(result)
   } catch (error) {
     return next(error);
   }
 });
 
+module.exports = router;

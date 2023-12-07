@@ -3,11 +3,12 @@ import { LOCAL_PORT } from "./constants";
 import { RequestError } from "./types/errors";
 
 const pjson = require("./../package.json");
-const { cors } = require("cors");
+const cors = require("cors");
 
 const app = express()
 const port = process.env.PORT || LOCAL_PORT
 
+const authRoutes = require("./routes/auth")
 
 
 // process JSON body => req.body
@@ -15,7 +16,8 @@ app.use(express.json())
 app.use(cors());
 
 // process traditional form data => req.body
-app.use(express.urlencoded({extended: true}))
+// app.use(express.urlencoded({extended: true}))
+app.use("/api/auth", authRoutes)
 
 app.listen(port, () => {
   console.info(`*** ${pjson.name} v${pjson.version} listening on ${port} *** `)
