@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createToken } from "../utils/auth";
+import { createToken, verifyToken } from "../utils/auth";
 
 const db = require("../db");
 const express = require("express");
@@ -45,7 +45,9 @@ router.post("/new", async (req: Request, res: Response, next: NextFunction) => {
     // create auth token using created_at as the secret
     const newToken = createToken({id: newID, secret: now})
     const responseBody = {token: newToken, user, }
-    // console.log("users/new", responseBody)
+    console.log("users/new", {now})
+
+    verifyToken({id: newID, secret: now, token: newToken})
 
     return res.json(responseBody).status(201)
   } catch (error: any) {
