@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { createToken } from "../utils/auth";
 
 const db = require("../db");
 const express = require("express");
@@ -27,23 +28,32 @@ router.post("/new", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {first_name, last_name, email, username, raw_password} = req.body
 
+    // TODO: check if email or username exist
+
     const newID = uuid();
     const now = new Date(Date.now()).toISOString()
-
     const passwordHash = await createPasswordHash(raw_password, now, newID);
+    const user = { first_name, last_name, email, username, id: newID }
 
-    const query = await db.query(
+    // create new user in users table
+    await db.query(
       `INSERT INTO users (first_name, last_name, email, username, created_at, id, password_hash)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING id`,
+        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
       [first_name, last_name, email, username, now, newID, passwordHash]
     );
 
-    const { id } = query.rows[0]
+    // create auth token using created_at as the secret
+    const newToken = createToken({id: newID, secret: now})
+    const responseBody = {token: newToken, user, }
+    // console.log("users/new", responseBody)
 
-    // TODO: return token
-    return res.json({id,passwordHash}).status(201)
-  } catch (error) {
+    return res.json(responseBody).status(201)
+  } catch (error: any) {
+    console.error(error)
+    if (error.status === 500) {
+      console.error("500", error.message)
+      //
+    }
     return next(error);
   }
 });

@@ -1,6 +1,6 @@
 DROP DATABASE IF EXISTS "service_notes_db";
 
-CREATE DATABASE "service_notes";
+CREATE DATABASE "service_notes_db";
 
 \c "service_notes_db"
 
@@ -13,7 +13,7 @@ CREATE TABLE Users (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   first_name VARCHAR(255) NOT NULL,
   last_name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
   phone_number VARCHAR(20),
   address VARCHAR(255),
   city VARCHAR(255),
@@ -21,7 +21,7 @@ CREATE TABLE Users (
   zip_code VARCHAR(10),
   img_url VARCHAR(255),  -- You might want to adjust the size based on your needs
   password_hash VARCHAR(255),
-  username VARCHAR(50) NOT NULL,
+  username VARCHAR(50) UNIQUE NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -93,6 +93,9 @@ CREATE TABLE Owner_Notes (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+\c "postgres"
+\q
 -- END ChatGPT
 
 -- CREATE TABLE users (

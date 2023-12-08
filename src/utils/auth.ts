@@ -12,8 +12,18 @@ interface ComplexStringData {
   uuid: UUID
 }
 
-const useComplexString = ({text, created_at, uuid} : ComplexStringData) => {
-return created_at + text + uuid
+const useComplexString = ({ text, created_at, uuid }: ComplexStringData): string => {
+  // convert String to Array, reverse it, then convert back to string
+  const reversed = `${created_at}${text}${uuid}`.split("").reverse()
+
+  let string = ''
+  reversed.forEach((char, i) => {
+    if (!(i % 7) || !(i % 3)) {
+      string = string + char
+    }
+  })
+
+  return string
 }
 
 export const createPasswordHash = async (rawPwd: string, createdDate: string, uuid: UUID) => {
@@ -29,11 +39,15 @@ export const createPasswordHash = async (rawPwd: string, createdDate: string, uu
 
 interface CreateTokenData {
   id: string;
-  secret: string
+  secret: string; //
 }
 
 export const createToken = ({ id, secret }: CreateTokenData) => {
   const data = { id };
-  const token = jwt.sign(data, secret, ({ expiresIn: TOKEN_EXPIRY_TIME }));
+  // const token = jwt.sign({data, exp: TOKEN_EXPIRY_TIME}, secret);
+  const token = jwt.sign({data, exp: 1}, secret);
+  // console.log("createToken", { token, id, secret })
   return token;
 }
+
+// export const verifyToken = ({id, secret}) => {}
