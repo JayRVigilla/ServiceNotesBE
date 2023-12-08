@@ -1,5 +1,5 @@
 import { UUID } from "crypto";
-import { TOKEN_EXPIRY_TIME } from "../constants";
+import { SUB_SYMBOLS_FOR_PAGER_CODE, TOKEN_EXPIRY_TIME } from "../constants";
 
 const bcrypt = require("bcrypt");
 const SALT_ROUNDS = 12
@@ -17,12 +17,13 @@ const useComplexString = ({ text, created_at, uuid }: ComplexStringData): string
   const reversed = `${created_at}${text}${uuid}`.split("").reverse()
 
   let string = ''
+  // only taking characters if index is evenly divisible by 3, 7, 11
   reversed.forEach((char, i) => {
-    if (!(i % 7) || !(i % 3)) {
-      string = string + char
+    if (!(i % 7) || !(i % 3) || !(i % 11)) {
+      // if the character is a symbol, use pager code of the symbol name
+      string = string + (SUB_SYMBOLS_FOR_PAGER_CODE[char] ? SUB_SYMBOLS_FOR_PAGER_CODE[char] : char)
     }
   })
-
   return string
 }
 
