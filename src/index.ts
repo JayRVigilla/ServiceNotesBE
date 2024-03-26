@@ -19,10 +19,10 @@ app.use(cors());
 // process traditional form data => req.body
 // app.use(express.urlencoded({extended: true}))
 app.use("/api/auth", authRoutes)
-app.use("/api/users", userRoutes)
+app.use("/api/public/users", userRoutes)
 
 app.listen(port, () => {
-  console.info(`*** ${pjson.name} v${pjson.version} listening on ${port} *** `)
+  console.info(`\n*** ${pjson.name} v${pjson.version} listening on ${port} ***\n`)
 })
 
 // 404 handler: matches unmatched routes. logs stacktrace and returns JSON error message.
@@ -36,6 +36,6 @@ app.use(function (err: RequestError, _req: Request, res: Response, next: NextFun
 });
 
 app.get("/", (_req: Request, res: Response) => {
-  const msg = "** hit / **"
+  const msg = "** hit ROOT **"
   return res.status(200).json(msg)
 })

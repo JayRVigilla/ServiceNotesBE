@@ -40,10 +40,11 @@ export const createPasswordHash = async (rawPwd: string, createdDate: string, uu
 
 interface CreateTokenData {
   id: string;
-  secret: string;
+  secret: string | undefined;
 }
 
 interface VerifyTokenData extends CreateTokenData {
+  secret: string;
   token: string;
 }
 
@@ -51,9 +52,11 @@ interface VerifyTokenData extends CreateTokenData {
 export const createToken = ({ id, secret }: CreateTokenData) => {
   try {
     const data = { id };
-    const createdAtNumber = new Date(secret).valueOf()
+    const createdAtNumber = new Date(secret ?? Date.now()).valueOf()
     const token = jwt.sign({data, exp: createdAtNumber + TOKEN_EXPIRY_TIME/1000}, secret);
-    console.log("createToken", { token, id, secret, exp: TOKEN_EXPIRY_TIME })
+
+    console.log("createToken", { token, id, secret, exp: createdAtNumber + TOKEN_EXPIRY_TIME/1000 })
+
     return token;
   } catch (error) {
     console.error(`createToken: ${error}`)
@@ -62,20 +65,25 @@ export const createToken = ({ id, secret }: CreateTokenData) => {
 
 export const verifyToken = ({ id, secret, token }: VerifyTokenData) => {
   try {
+    // const secretDate = new Date(new Date(Date.now()).setFullYear(2025)).toISOString()
+    //  !! currently, if invalid (ie after expiry date, then JWTError)
     const decoded = jwt.verify(token, secret)
-    console.log("verifyToken:\n", decoded)
+    // console.log("verifyToken:\n", decoded)
+    // console.log("verifyToken2:\n", {iat: new Date(decoded.iat), exp: new Date(decoded.exp)})
         /**
      * verifyToken:
           {
             data: { id: '3f882fbc-dea2-4fb3-9f7f-7789e80bd5f6' },
+            // JS Date (ms after Epoch)
             exp: 1702077508378,
+            // Unix time (sec after Epoch)
             iat: 1702077507
           }
      */
 
     const { data: { id }, exp } = decoded
 
-    
+
     // TODO: if expired, create a new one?
     return decoded.data.id === id
   } catch (error) {

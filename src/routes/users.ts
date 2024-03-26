@@ -45,9 +45,10 @@ router.post("/new", async (req: Request, res: Response, next: NextFunction) => {
     // create auth token using created_at as the secret
     const newToken = createToken({id: newID, secret: now})
     const responseBody = {token: newToken, user, }
-    console.log("users/new", {now})
+    // console.log("users/new", {now})
 
-    verifyToken({id: newID, secret: now, token: newToken})
+    const verified = verifyToken({ id: newID, secret: now, token: newToken })
+    console.log("/new/user", verified)
 
     return res.json(responseBody).status(201)
   } catch (error: any) {
