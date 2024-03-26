@@ -43,12 +43,14 @@ router.post("/new", async (req: Request, res: Response, next: NextFunction) => {
     );
 
     // create auth token using created_at as the secret
-    const newToken = createToken({id: newID, secret: now})
-    const responseBody = {token: newToken, user, }
+    // const newToken = createToken({id: newID, secret: now})
+    // const responseBody = {token: newToken, user, }
     // console.log("users/new", {now})
 
-    const verified = verifyToken({ id: newID, secret: now, token: newToken })
-    console.log("/new/user", verified)
+    const responseBody = {user}
+
+    // const verified = verifyToken({ id: newID, secret: now, token: newToken })
+    // console.log("/new/user", verified)
 
     return res.json(responseBody).status(201)
   } catch (error: any) {
@@ -71,22 +73,61 @@ router.post("/new", async (req: Request, res: Response, next: NextFunction) => {
 // });
 
 // TODO: GET User
-// router.get("", async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const result = await database.query(``);
-//   } catch (error) {
-//     return next(error);
-//   }
-// });
+router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await db.query(
+      `SELECT u.id,
+              u.username,
+              u.first_name,
+              u.last_name,
+              u.email
+      FROM Users u
+      WHERE u.id = $1
+      `, [req.params.id]
+    )
+    return res.json(result.rows[0]).status(200)
+  } catch (error) {
+    return next(error);
+  }
+});
 
 // TODO: UPDATE User
-// router.put("", async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const result = await database.query(``);
-//   } catch (error) {
-//     return next(error);
-//   }
-// });
+router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { first_name, last_name, username, email, phone_number, address, city, state, zip_code, img_url } = req.body;
+
+    const currentData = await db.query(
+      `SELECT first_name,
+      last_name,
+      username,
+      email,
+      phone_number,
+      address,
+      city,
+      state,
+      zip_code,
+      img_url
+
+      FROM Users u
+      WHERE u.id = $1
+      `, [req.params.id])
+
+    // fill in undefined values of req.body with current values
+    for (let key in req.body) {
+      if(!key) req.body[key] = currentData[key]
+    }
+
+    const currentTime = new Date(Date.now()).toISOString()
+
+    const result = await db.query(
+      `UPDATE Users SET first_name=$1, last_name=$2, username=$3, email=$4, phone_number=$5, address=$6, city=$7, state=$8, zip_code=$9, img_url=$10, updated_at=$11
+    `, [first_name, last_name, username, email, phone_number, address, city, state, zip_code, img_url, currentTime]);
+
+    return res.json(result.rows[0])
+  } catch (error) {
+    return next(error);
+  }
+});
 
 // TODO: DELETE User
 // router.delete("", async (req: Request, res: Response, next: NextFunction) => {

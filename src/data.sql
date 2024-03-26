@@ -22,7 +22,9 @@ CREATE TABLE Users (
   img_url VARCHAR(255),  -- You might want to adjust the size based on your needs
   password_hash VARCHAR(255),
   username VARCHAR(50) UNIQUE NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  active_status BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE UserTypes (
